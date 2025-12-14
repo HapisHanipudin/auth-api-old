@@ -10,7 +10,7 @@ describe("a NewComment entities", () => {
 
   it("should throw error when payload did not meet data type specification", () => {
     const payload = {
-      content: 12345,
+      content: 123,
     };
     expect(() => new NewComment(payload)).toThrow(
       "NEW_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION",
@@ -19,7 +19,7 @@ describe("a NewComment entities", () => {
 
   it("should create newComment object correctly", () => {
     const payload = {
-      content: "sebuah comment",
+      content: "isi komentar",
     };
     const newComment = new NewComment(payload);
     expect(newComment.content).toEqual(payload.content);

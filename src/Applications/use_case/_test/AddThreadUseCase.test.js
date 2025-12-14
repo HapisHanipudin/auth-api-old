@@ -12,14 +12,14 @@ describe("AddThreadUseCase", () => {
     };
     const mockThreadOwner = "user-123";
 
-    // Output yang diharapkan dari Use Case
+    // Output yang diharapkan
     const expectedAddedThread = new AddedThread({
       id: "thread-123",
       title: useCasePayload.title,
       owner: mockThreadOwner,
     });
 
-    // PERBAIKAN: Objek return dari Mock Repository (dipisah)
+    // Mock return value (dipisah dari expected)
     const mockAddedThread = new AddedThread({
       id: "thread-123",
       title: useCasePayload.title,
@@ -32,7 +32,7 @@ describe("AddThreadUseCase", () => {
     /** mocking needed function */
     mockThreadRepository.addThread = jest
       .fn()
-      .mockImplementation(() => Promise.resolve(mockAddedThread)); // Gunakan mockAddedThread
+      .mockImplementation(() => Promise.resolve(mockAddedThread));
 
     /** creating use case instance */
     const addThreadUseCase = new AddThreadUseCase({

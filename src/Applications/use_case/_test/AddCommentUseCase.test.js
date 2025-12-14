@@ -13,14 +13,13 @@ describe("AddCommentUseCase", () => {
     const useCaseThreadId = "thread-123";
     const useCaseUserId = "user-123";
 
-    // Output yang diharapkan dari Use Case
     const expectedAddedComment = new AddedComment({
       id: "comment-123",
       content: useCasePayload.content,
       owner: useCaseUserId,
     });
 
-    // PERBAIKAN: Objek return dari Mock Repository (dipisah)
+    // Mock return value
     const mockAddedComment = new AddedComment({
       id: "comment-123",
       content: useCasePayload.content,

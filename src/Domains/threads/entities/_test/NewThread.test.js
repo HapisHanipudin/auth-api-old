@@ -3,8 +3,7 @@ const NewThread = require("../NewThread");
 describe("a NewThread entities", () => {
   it("should throw error when payload did not contain needed property", () => {
     const payload = {
-      title: "sebuah thread",
-      body: "ini body thread",
+      title: "abc",
     };
     expect(() => new NewThread(payload)).toThrow(
       "NEW_THREAD.NOT_CONTAIN_NEEDED_PROPERTY",
@@ -13,9 +12,9 @@ describe("a NewThread entities", () => {
 
   it("should throw error when payload did not meet data type specification", () => {
     const payload = {
-      title: "sebuah thread",
-      body: "ini body thread",
-      owner: 123,
+      title: 123,
+      body: true,
+      owner: "abc",
     };
     expect(() => new NewThread(payload)).toThrow(
       "NEW_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION",
@@ -25,7 +24,7 @@ describe("a NewThread entities", () => {
   it("should create newThread object correctly", () => {
     const payload = {
       title: "sebuah thread",
-      body: "ini body thread",
+      body: "isi body",
       owner: "user-123",
     };
     const newThread = new NewThread(payload);
