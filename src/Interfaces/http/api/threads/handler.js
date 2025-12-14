@@ -31,7 +31,7 @@ class ThreadsHandler {
     return response;
   }
 
-  async getThreadByIdHandler(request, h) {
+  async getThreadByIdHandler(request) {
     const getThreadDetailUseCase = this._container.getInstance(
       GetThreadDetailUseCase.name,
     );

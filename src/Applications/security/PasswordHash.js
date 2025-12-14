@@ -1,5 +1,5 @@
 class PasswordHash {
-  async hash(password) {
+  async hash(_password) {
     throw new Error("PASSWORD_HASH.METHOD_NOT_IMPLEMENTED");
   }
 }

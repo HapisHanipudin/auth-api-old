@@ -32,7 +32,7 @@ class CommentsHandler {
     return response;
   }
 
-  async deleteCommentHandler(request, h) {
+  async deleteCommentHandler(request) {
     const deleteCommentUseCase = this._container.getInstance(
       DeleteCommentUseCase.name,
     );
