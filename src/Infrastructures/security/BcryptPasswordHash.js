@@ -8,7 +8,15 @@ class BcryptPasswordHash extends PasswordHash {
   }
 
   async hash(password) {
-    return this._bcrypt.hash(password, this._saltRound);
+    return await this._bcrypt.hash(password, this._saltRound);
+  }
+
+  async compare(password, hashedPassword) {
+    const isMatch = await this._bcrypt.compare(password, hashedPassword);
+    if (!isMatch) {
+      throw new Error("PASSWORD_HASH.NOT_MATCHED_PASSWORD");
+    }
+    return isMatch;
   }
 }
 
