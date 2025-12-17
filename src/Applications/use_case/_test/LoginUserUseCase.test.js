@@ -22,7 +22,7 @@ describe("LoginUserUseCase", () => {
     mockUserRepository.getPasswordByUsername = jest
       .fn()
       .mockImplementation(() => Promise.resolve("encrypted_password"));
-    mockPasswordHash.comparePassword = jest
+    mockPasswordHash.compare = jest
       .fn()
       .mockImplementation(() => Promise.resolve());
     mockUserRepository.getIdByUsername = jest
@@ -58,7 +58,7 @@ describe("LoginUserUseCase", () => {
     expect(mockUserRepository.getPasswordByUsername).toHaveBeenCalledWith(
       "dicoding",
     );
-    expect(mockPasswordHash.comparePassword).toHaveBeenCalledWith(
+    expect(mockPasswordHash.compare).toHaveBeenCalledWith(
       "secret_password",
       "encrypted_password",
     );

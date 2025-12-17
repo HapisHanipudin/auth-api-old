@@ -20,7 +20,7 @@ class LoginUserUseCase {
     const encryptedPassword =
       await this._userRepository.getPasswordByUsername(username);
 
-    await this._passwordHash.comparePassword(password, encryptedPassword);
+    await this._passwordHash.compare(password, encryptedPassword);
 
     const id = await this._userRepository.getIdByUsername(username);
 

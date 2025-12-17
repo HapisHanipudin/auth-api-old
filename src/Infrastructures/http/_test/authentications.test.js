@@ -1,3 +1,4 @@
+const bcrypt = require("bcrypt");
 const pool = require("../../database/postgres/pool");
 const AuthenticationsTableTestHelper = require("../../../../tests/AuthenticationsTableTestHelper");
 const UsersTableTestHelper = require("../../../../tests/UsersTableTestHelper");
@@ -21,11 +22,15 @@ describe("/authentications endpoint", () => {
         username: "dicoding",
         password: "secret_password",
       };
-      // PENTING: User harus dibuat dulu di database sebelum login!
+
+      //Hash password sebelum disimpan ke DB test
+      const hashedPassword = await bcrypt.hash("secret_password", 10);
+
       await UsersTableTestHelper.addUser({
         username: "dicoding",
-        password: "secret_password",
+        password: hashedPassword, // Gunakan hashed password
       });
+
       const server = await createServer(container);
 
       // Action
@@ -37,6 +42,10 @@ describe("/authentications endpoint", () => {
 
       // Assert
       const responseJson = JSON.parse(response.payload);
+
+      if (response.statusCode !== 201) {
+        console.error(responseJson);
+      }
       expect(response.statusCode).toEqual(201);
       expect(responseJson.status).toEqual("success");
       expect(responseJson.data.accessToken).toBeDefined();
@@ -148,10 +157,13 @@ describe("/authentications endpoint", () => {
     it("should response 200 and new access token", async () => {
       // Arrange
       const server = await createServer(container);
-      // 1. Daftar & Login User dulu
+
+      // Hash password
+      const hashedPassword = await bcrypt.hash("secret_password", 10);
+
       await UsersTableTestHelper.addUser({
         username: "dicoding",
-        password: "secret_password",
+        password: hashedPassword, // Gunakan hashed password
       });
       const loginResponse = await server.inject({
         method: "POST",
@@ -247,10 +259,14 @@ describe("/authentications endpoint", () => {
     it("should response 200", async () => {
       // Arrange
       const server = await createServer(container);
+
+      // Hash password
+      const hashedPassword = await bcrypt.hash("secret_password", 10);
+
       // 1. Daftar & Login User dulu
       await UsersTableTestHelper.addUser({
         username: "dicoding",
-        password: "secret_password",
+        password: hashedPassword, // Gunakan hashed password
       });
       const loginResponse = await server.inject({
         method: "POST",
