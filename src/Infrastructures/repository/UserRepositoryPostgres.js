@@ -1,4 +1,5 @@
 const InvariantError = require("../../Commons/exceptions/InvariantError");
+const AuthenticationError = require("../../Commons/exceptions/AuthenticationError"); // Import ini
 const RegisteredUser = require("../../Domains/users/entities/RegisteredUser");
 const UserRepository = require("../../Domains/users/UserRepository");
 
@@ -36,6 +37,7 @@ class UserRepositoryPostgres extends UserRepository {
     return new RegisteredUser({ ...result.rows[0] });
   }
 
+  // [WAJIB ADA] Method ini dipanggil saat Login
   async getPasswordByUsername(username) {
     const query = {
       text: "SELECT password FROM users WHERE username = $1",
@@ -45,7 +47,8 @@ class UserRepositoryPostgres extends UserRepository {
     const result = await this._pool.query(query);
 
     if (!result.rowCount) {
-      throw new InvariantError("username tidak ditemukan");
+      // Kita lempar AuthenticationError (401) biar konsisten dengan salah password
+      throw new AuthenticationError("kredensial yang Anda berikan salah");
     }
 
     return result.rows[0].password;
@@ -59,8 +62,9 @@ class UserRepositoryPostgres extends UserRepository {
 
     const result = await this._pool.query(query);
 
+    // Antisipasi jika data mendadak hilang (jarang terjadi di flow normal)
     if (!result.rowCount) {
-      throw new InvariantError("username tidak ditemukan");
+      throw new InvariantError("user tidak ditemukan");
     }
 
     return result.rows[0].id;
