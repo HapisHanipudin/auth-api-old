@@ -70,14 +70,26 @@ describe("GetThreadDetailUseCase", () => {
     });
 
     // Action
-    const result = await getThreadDetailUseCase.execute(useCasePayload);
+    const detailThread = await getThreadDetailUseCase.execute(useCasePayload);
+
     // Assert
-    expect(result).toEqual(expectedDetailThread);
     expect(mockThreadRepository.getThreadById).toHaveBeenCalledWith(
       useCasePayload.threadId,
     );
     expect(mockCommentRepository.getCommentsByThreadId).toHaveBeenCalledWith(
       useCasePayload.threadId,
+    );
+
+    // [PERBAIKAN] Cek apakah logic formatting jalan?
+    expect(detailThread.id).toEqual("thread-123");
+    expect(detailThread.comments).toHaveLength(2);
+
+    // Komentar 1 harus normal
+    expect(detailThread.comments[0].content).toEqual("komentar normal");
+
+    // Komentar 2 harus berubah teksnya (ini bukti Use Case bekerja!)
+    expect(detailThread.comments[1].content).toEqual(
+      "**komentar telah dihapus**",
     );
   });
 });
