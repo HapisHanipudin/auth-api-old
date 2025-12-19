@@ -176,6 +176,15 @@ describe("CommentRepositoryPostgres", () => {
         date: "2023-01-01T00:00:00.000Z",
       });
 
+      await CommentsTableTestHelper.addComment({
+        id: "comment-2",
+        content: "komentar kedua",
+        threadId,
+        owner: userPayload.id,
+        date: "2023-01-02T00:00:00.000Z",
+        isDelete: true,
+      });
+
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
 
       // Action
@@ -183,12 +192,17 @@ describe("CommentRepositoryPostgres", () => {
         await commentRepositoryPostgres.getCommentsByThreadId(threadId);
 
       // Assert
-      expect(comments).toHaveLength(1);
+      expect(comments).toHaveLength(2);
 
       expect(comments[0].id).toEqual("comment-1");
       expect(comments[0].username).toEqual("dicoding");
       expect(comments[0].content).toEqual("komentar pertama");
       expect(comments[0].date).toBeDefined();
+
+      // Cek data kedua (yang dihapus)
+      expect(comments[1].id).toEqual("comment-2");
+      expect(comments[1].is_delete).toEqual(true); // Cek status delete
+      expect(comments[1].content).toEqual("komentar kedua");
     });
   });
 });
