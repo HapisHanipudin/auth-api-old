@@ -10,22 +10,48 @@ describe("GetThreadDetailUseCase", () => {
       threadId: "thread-123",
     };
 
-    const expectedDetailThread = new DetailThread({
+    const mockThread = {
       id: "thread-123",
-      title: "sebuah thread",
-      body: "isi body thread",
-      date: "2023-01-01T00:00:00.000Z",
+      title: "sebuah title",
+      body: "sebuah body",
+      date: "2021-08-08T07:19:09.775Z",
       username: "dicoding",
-    });
+    };
 
-    const expectedComments = [
+    const mockComments = [
       {
         id: "comment-123",
         username: "dicoding",
-        date: "2023-01-01T00:00:00.000Z",
+        date: "2021-08-08T07:22:33.555Z",
         content: "sebuah comment",
+        is_delete: false, // Kasus normal
+      },
+      {
+        id: "comment-456",
+        username: "johndoe",
+        date: "2021-08-08T07:26:21.338Z",
+        content: "sebuah comment kasar",
+        is_delete: true, // Kasus dihapus
       },
     ];
+
+    const expectedDetailThread = {
+      ...mockThread,
+      comments: [
+        {
+          id: "comment-123",
+          username: "dicoding",
+          date: "2021-08-08T07:22:33.555Z",
+          content: "sebuah comment",
+        },
+        {
+          id: "comment-456",
+          username: "johndoe",
+          date: "2021-08-08T07:26:21.338Z",
+          content: "**komentar telah dihapus**", // Logic Use Case harus mengubah ini
+        },
+      ],
+    };
 
     const mockThreadRepository = new ThreadRepository();
     const mockCommentRepository = new CommentRepository();
@@ -33,10 +59,10 @@ describe("GetThreadDetailUseCase", () => {
     // Mocking
     mockThreadRepository.getThreadById = jest
       .fn()
-      .mockImplementation(() => Promise.resolve(expectedDetailThread));
+      .mockImplementation(() => Promise.resolve(mockThread));
     mockCommentRepository.getCommentsByThreadId = jest
       .fn()
-      .mockImplementation(() => Promise.resolve(expectedComments));
+      .mockImplementation(() => Promise.resolve(mockComments));
 
     const getThreadDetailUseCase = new GetThreadDetailUseCase({
       threadRepository: mockThreadRepository,
@@ -44,13 +70,9 @@ describe("GetThreadDetailUseCase", () => {
     });
 
     // Action
-    const detailThread = await getThreadDetailUseCase.execute(useCasePayload);
-
+    const result = await getThreadDetailUseCase.execute(useCasePayload);
     // Assert
-    expect(detailThread).toStrictEqual({
-      ...expectedDetailThread,
-      comments: expectedComments,
-    });
+    expect(result).toEqual(expectedDetailThread);
     expect(mockThreadRepository.getThreadById).toHaveBeenCalledWith(
       useCasePayload.threadId,
     );

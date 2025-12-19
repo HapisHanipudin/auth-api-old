@@ -11,7 +11,16 @@ class GetThreadDetailUseCase {
     const comments =
       await this._commentRepository.getCommentsByThreadId(threadId);
 
-    return { ...thread, comments };
+    thread.comments = comments.map((comment) => ({
+      id: comment.id,
+      username: comment.username,
+      date: comment.date,
+      content: comment.is_delete
+        ? "**komentar telah dihapus**"
+        : comment.content,
+    }));
+
+    return thread;
   }
 }
 

@@ -1,5 +1,5 @@
 const InvariantError = require("../../Commons/exceptions/InvariantError");
-const AuthenticationError = require("../../Commons/exceptions/AuthenticationError"); // Import ini
+const AuthenticationError = require("../../Commons/exceptions/AuthenticationError"); // [WAJIB] Import ini
 const RegisteredUser = require("../../Domains/users/entities/RegisteredUser");
 const UserRepository = require("../../Domains/users/UserRepository");
 
@@ -47,13 +47,13 @@ class UserRepositoryPostgres extends UserRepository {
     const result = await this._pool.query(query);
 
     if (!result.rowCount) {
-      // Kita lempar AuthenticationError (401) biar konsisten dengan salah password
       throw new AuthenticationError("kredensial yang Anda berikan salah");
     }
 
     return result.rows[0].password;
   }
 
+  // [WAJIB ADA] Method ini dipanggil saat Login untuk bikin Token
   async getIdByUsername(username) {
     const query = {
       text: "SELECT id FROM users WHERE username = $1",
@@ -62,7 +62,6 @@ class UserRepositoryPostgres extends UserRepository {
 
     const result = await this._pool.query(query);
 
-    // Antisipasi jika data mendadak hilang (jarang terjadi di flow normal)
     if (!result.rowCount) {
       throw new InvariantError("user tidak ditemukan");
     }

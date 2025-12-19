@@ -1,5 +1,6 @@
 const UsersTableTestHelper = require("../../../../tests/UsersTableTestHelper");
 const InvariantError = require("../../../Commons/exceptions/InvariantError");
+const AuthenticationError = require("../../../Commons/exceptions/AuthenticationError"); // [WAJIB]
 const RegisterUser = require("../../../Domains/users/entities/RegisterUser");
 const RegisteredUser = require("../../../Domains/users/entities/RegisteredUser");
 const pool = require("../../database/postgres/pool");
@@ -17,7 +18,7 @@ describe("UserRepositoryPostgres", () => {
   describe("verifyAvailableUsername function", () => {
     it("should throw InvariantError when username not available", async () => {
       // Arrange
-      await UsersTableTestHelper.addUser({ username: "dicoding" }); // memasukan user baru dengan username dicoding
+      await UsersTableTestHelper.addUser({ username: "dicoding" });
       const userRepositoryPostgres = new UserRepositoryPostgres(pool, {});
 
       // Action & Assert
@@ -83,6 +84,62 @@ describe("UserRepositoryPostgres", () => {
           fullname: "Dicoding Indonesia",
         }),
       );
+    });
+  });
+
+  describe("getPasswordByUsername", () => {
+    it("should throw AuthenticationError when user not found", async () => {
+      // Arrange
+      const userRepositoryPostgres = new UserRepositoryPostgres(pool, {});
+
+      // Action & Assert
+      await expect(
+        userRepositoryPostgres.getPasswordByUsername("dicoding"),
+      ).rejects.toThrow(AuthenticationError);
+    });
+
+    it("should return user password when user is found", async () => {
+      // Arrange
+      const userRepositoryPostgres = new UserRepositoryPostgres(pool, {});
+      await UsersTableTestHelper.addUser({
+        username: "dicoding",
+        password: "secret_password",
+      });
+
+      // Action
+      const password =
+        await userRepositoryPostgres.getPasswordByUsername("dicoding");
+
+      // Assert
+      expect(password).toBe("secret_password");
+    });
+  });
+
+  // [NEW] Tambahan untuk method getIdByUsername
+  describe("getIdByUsername", () => {
+    it("should throw InvariantError when user not found", async () => {
+      // Arrange
+      const userRepositoryPostgres = new UserRepositoryPostgres(pool, {});
+
+      // Action & Assert
+      await expect(
+        userRepositoryPostgres.getIdByUsername("dicoding"),
+      ).rejects.toThrow(InvariantError);
+    });
+
+    it("should return user id correctly", async () => {
+      // Arrange
+      await UsersTableTestHelper.addUser({
+        id: "user-123",
+        username: "dicoding",
+      });
+      const userRepositoryPostgres = new UserRepositoryPostgres(pool, {});
+
+      // Action
+      const id = await userRepositoryPostgres.getIdByUsername("dicoding");
+
+      // Assert
+      expect(id).toEqual("user-123");
     });
   });
 });
