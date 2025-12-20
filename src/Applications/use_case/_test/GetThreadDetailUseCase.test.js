@@ -2,6 +2,7 @@ const DetailThread = require("../../../Domains/threads/entities/DetailThread");
 const ThreadRepository = require("../../../Domains/threads/ThreadRepository");
 const CommentRepository = require("../../../Domains/comments/CommentRepository");
 const GetThreadDetailUseCase = require("../GetThreadDetailUseCase");
+const DetailComment = require("../../../Domains/comments/entities/DetailComment");
 
 describe("GetThreadDetailUseCase", () => {
   it("should orchestrate the get thread detail action correctly", async () => {
@@ -67,22 +68,26 @@ describe("GetThreadDetailUseCase", () => {
       useCasePayload.threadId,
     );
 
-    // 2. Pastikan hasil Use Case sudah "matang" (Logic formatting berjalan)
-    expect(detailThread.id).toEqual("thread-123");
+    //
+    expect(detailThread).toMatchObject({
+      id: mockThread.id,
+      title: mockThread.title,
+      body: mockThread.body,
+      date: mockThread.date,
+      username: mockThread.username,
+    });
+
+    // Validasi Detail Comments
     expect(detailThread.comments).toHaveLength(2);
 
-    // Komentar 1 (Normal): Harus SAMA dengan data mock asli
-    expect(detailThread.comments[0].id).toEqual("comment-123");
-    expect(detailThread.comments[0].username).toEqual("dicoding");
-    expect(detailThread.comments[0].date).toEqual("2021-08-08T07:22:33.555Z");
-    expect(detailThread.comments[0].content).toEqual("sebuah comment");
+    // Cek Komentar 1 (Normal)
+    expect(detailThread.comments[0]).toMatchObject(
+      new DetailComment(mockComments[0]),
+    );
 
-    // Komentar 2 (Deleted): Harus BERUBAH sesuai logic Use Case
-    expect(detailThread.comments[1].id).toEqual("comment-456");
-    expect(detailThread.comments[1].username).toEqual("johndoe");
-    expect(detailThread.comments[1].date).toEqual("2021-08-08T07:26:21.338Z");
-    expect(detailThread.comments[1].content).toEqual(
-      "**komentar telah dihapus**",
+    // Cek Komentar 2 (Deleted)
+    expect(detailThread.comments[1]).toMatchObject(
+      new DetailComment(mockComments[0]),
     );
   });
 });

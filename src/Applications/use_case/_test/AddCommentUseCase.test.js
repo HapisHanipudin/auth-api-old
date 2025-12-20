@@ -13,12 +13,6 @@ describe("AddCommentUseCase", () => {
     const useCaseThreadId = "thread-123";
     const useCaseUserId = "user-123";
 
-    const expectedAddedComment = new AddedComment({
-      id: "comment-123",
-      content: useCasePayload.content,
-      owner: useCaseUserId,
-    });
-
     // Mock return value
     const mockAddedComment = new AddedComment({
       id: "comment-123",
@@ -53,7 +47,13 @@ describe("AddCommentUseCase", () => {
     );
 
     // Assert
-    expect(addedComment).toStrictEqual(expectedAddedComment);
+    expect(addedComment).toStrictEqual(
+      new AddedComment({
+        id: "comment-123",
+        content: useCasePayload.content,
+        owner: useCaseUserId,
+      }),
+    );
     expect(mockThreadRepository.verifyThreadAvailability).toHaveBeenCalledWith(
       useCaseThreadId,
     );

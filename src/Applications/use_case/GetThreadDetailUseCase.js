@@ -1,3 +1,5 @@
+const DetailComment = require("../../Domains/comments/entities/DetailComment");
+
 class GetThreadDetailUseCase {
   constructor({ threadRepository, commentRepository }) {
     this._threadRepository = threadRepository;
@@ -11,14 +13,7 @@ class GetThreadDetailUseCase {
     const comments =
       await this._commentRepository.getCommentsByThreadId(threadId);
 
-    thread.comments = comments.map((comment) => ({
-      id: comment.id,
-      username: comment.username,
-      date: comment.date,
-      content: comment.is_delete
-        ? "**komentar telah dihapus**"
-        : comment.content,
-    }));
+    thread.comments = comments.map((comment) => new DetailComment(comment));
 
     return thread;
   }

@@ -12,13 +12,6 @@ describe("AddThreadUseCase", () => {
     };
     const mockThreadOwner = "user-123";
 
-    // Output yang diharapkan
-    const expectedAddedThread = new AddedThread({
-      id: "thread-123",
-      title: useCasePayload.title,
-      owner: mockThreadOwner,
-    });
-
     // Mock return value (dipisah dari expected)
     const mockAddedThread = new AddedThread({
       id: "thread-123",
@@ -46,7 +39,13 @@ describe("AddThreadUseCase", () => {
     );
 
     // Assert
-    expect(addedThread).toStrictEqual(expectedAddedThread);
+    expect(addedThread).toStrictEqual(
+      new AddedThread({
+        id: "thread-123",
+        title: useCasePayload.title,
+        owner: mockThreadOwner,
+      }),
+    );
     expect(mockThreadRepository.addThread).toHaveBeenCalledWith(
       new NewThread({
         title: useCasePayload.title,
