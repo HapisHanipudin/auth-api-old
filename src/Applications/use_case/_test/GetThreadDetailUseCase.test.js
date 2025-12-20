@@ -87,7 +87,7 @@ describe("GetThreadDetailUseCase", () => {
 
     // Cek Komentar 2 (Deleted)
     expect(detailThread.comments[1]).toMatchObject(
-      new DetailComment(mockComments[0]),
+      new DetailComment(mockComments[1]),
     );
   });
 });
