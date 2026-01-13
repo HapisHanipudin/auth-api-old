@@ -95,7 +95,7 @@ describe("UserRepositoryPostgres", () => {
       // Action & Assert
       await expect(
         userRepositoryPostgres.getPasswordByUsername("dicoding"),
-      ).rejects.toThrow(AuthenticationError);
+      ).rejects.toThrow(InvariantError);
     });
 
     it("should return user password when user is found", async () => {

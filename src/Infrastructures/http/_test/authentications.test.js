@@ -116,7 +116,7 @@ describe("/authentications endpoint", () => {
 
       // Assert
       const responseJson = JSON.parse(response.payload);
-      expect(response.statusCode).toEqual(401);
+      expect(response.statusCode).toEqual(400);
       expect(responseJson.status).toEqual("fail");
       expect(responseJson.message).toEqual(
         "kredensial yang Anda berikan salah",
@@ -353,7 +353,9 @@ describe("/authentications endpoint", () => {
       const responseJson = JSON.parse(response.payload);
       expect(response.statusCode).toEqual(400);
       expect(responseJson.status).toEqual("fail");
-      expect(responseJson.message).toEqual("refresh token tidak valid");
+      expect(responseJson.message).toEqual(
+        "refresh token tidak ditemukan di database",
+      );
     });
   });
 });

@@ -28,6 +28,7 @@ describe("GetThreadDetailUseCase", () => {
         date: "2021-08-08T07:22:33.555Z",
         content: "sebuah comment",
         is_delete: false, // Case: Normal
+        like_count: 0,
       },
       {
         id: "comment-456",
@@ -35,6 +36,7 @@ describe("GetThreadDetailUseCase", () => {
         date: "2021-08-08T07:26:21.338Z",
         content: "sebuah comment kasar",
         is_delete: true, // Case: Dihapus (Soft Delete)
+        like_count: 0,
       },
     ];
 
