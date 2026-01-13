@@ -2,16 +2,16 @@ class DetailComment {
   constructor(payload) {
     this._verifyPayload(payload);
 
-    const { id, username, date, content, is_delete } = payload;
+    const { id, username, date, content, is_delete, like_count } = payload; // Perhatikan like_count dari query
 
     this.id = id;
     this.username = username;
     this.date = date;
-    // Logic sensor pindah ke sini (Domain Logic)
     this.content = is_delete ? "**komentar telah dihapus**" : content;
+    this.likeCount = like_count || 0;
   }
 
-  _verifyPayload({ id, username, date, content, is_delete }) {
+  _verifyPayload({ id, username, date, content, is_delete, like_count }) {
     if (!id || !username || !date || !content) {
       throw new Error("DETAIL_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY");
     }
@@ -21,7 +21,8 @@ class DetailComment {
       typeof username !== "string" ||
       typeof date !== "string" ||
       typeof content !== "string" ||
-      typeof is_delete !== "boolean" // Pastikan is_delete boolean (opsional, tergantung repository)
+      typeof is_delete !== "boolean" ||
+      typeof like_count !== "number"
     ) {
       throw new Error("DETAIL_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION");
     }
