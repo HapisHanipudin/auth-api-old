@@ -7,21 +7,10 @@ const authentications = require("../../Interfaces/http/api/authentications"); //
 const threads = require("../../Interfaces/http/api/threads");
 const comments = require("../../Interfaces/http/api/comments");
 const config = require("../../Commons/config");
-const swaggerJsDoc = require("swagger-jsdoc");
-const swaggerUi = require("swagger-ui-express");
 
-const swaggerOptions = {
-  definition: {
-    openapi: "3.0.0",
-    info: {
-      title: "Auth API Documentation",
-      version: "1.0.0",
-      description: "Dokumentasi API pakai Swagger + Express",
-    },
-    servers: [{ url: "http://localhost:3000" }],
-  },
-  apis: ["./src/api/notes/routes.js"],
-};
+const Inert = require("@hapi/inert");
+const Vision = require("@hapi/vision");
+const HapiSwagger = require("hapi-swagger");
 
 const createServer = async (container) => {
   const server = Hapi.server({
@@ -29,9 +18,32 @@ const createServer = async (container) => {
     port: config.app.port,
   });
 
+  const swaggerOptions = {
+    info: {
+      title: "Auth API Documentation",
+      version: "1.0.0",
+      description: "Dokumentasi API Auth (Hapi Version)",
+    },
+    // Ini biar token JWT bisa di-set lewat tombol 'Authorize' di UI
+    securityDefinitions: {
+      jwt: {
+        type: "apiKey",
+        name: "Authorization",
+        in: "header",
+      },
+    },
+  };
+
   await server.register([
     {
       plugin: Jwt,
+    },
+    // Register Plugin Swagger di sini
+    Inert,
+    Vision,
+    {
+      plugin: HapiSwagger,
+      options: swaggerOptions,
     },
   ]);
 

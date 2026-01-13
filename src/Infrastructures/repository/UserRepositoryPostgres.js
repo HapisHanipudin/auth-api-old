@@ -47,7 +47,7 @@ class UserRepositoryPostgres extends UserRepository {
     const result = await this._pool.query(query);
 
     if (!result.rowCount) {
-      throw new AuthenticationError("kredensial yang Anda berikan salah");
+      throw new InvariantError("kredensial yang Anda berikan salah");
     }
 
     return result.rows[0].password;
