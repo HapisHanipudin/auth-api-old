@@ -7,6 +7,21 @@ const authentications = require("../../Interfaces/http/api/authentications"); //
 const threads = require("../../Interfaces/http/api/threads");
 const comments = require("../../Interfaces/http/api/comments");
 const config = require("../../Commons/config");
+const swaggerJsDoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
+
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Auth API Documentation",
+      version: "1.0.0",
+      description: "Dokumentasi API pakai Swagger + Express",
+    },
+    servers: [{ url: "http://localhost:3000" }],
+  },
+  apis: ["./src/api/notes/routes.js"],
+};
 
 const createServer = async (container) => {
   const server = Hapi.server({
