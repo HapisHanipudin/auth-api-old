@@ -151,4 +151,86 @@ describe("/threads/{threadId}/comments endpoint", () => {
       expect(response.statusCode).toEqual(403);
     });
   });
+
+  describe("PUT /threads/{threadId}/comments/{commentId}/likes", () => {
+    it("should return 200 when toggle like logic executed successfully", async () => {
+      // Arrange
+      const server = await createServer(container);
+
+      // Add User
+      const userId = "user-123";
+      await UsersTableTestHelper.addUser({ id: userId, username: "dicoding" });
+
+      const accessToken = Jwt.token.generate(
+        { id: userId },
+        process.env.ACCESS_TOKEN_KEY,
+      );
+
+      // Add Thread
+      const threadId = "thread-123";
+      await ThreadsTableTestHelper.addThread({
+        id: threadId,
+        owner: userId,
+      });
+
+      // Add Comment
+      const commentId = "comment-123";
+      await CommentsTableTestHelper.addComment({
+        id: commentId,
+        threadId,
+        owner: userId,
+      });
+
+      // Action
+      const response = await server.inject({
+        method: "PUT",
+        url: `/threads/${threadId}/comments/${commentId}/likes`,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(200);
+      expect(responseJson.status).toEqual("success");
+    });
+
+    it("should return 401 when request missing authentication", async () => {
+      // Arrange
+      const server = await createServer(container);
+
+      // Action
+      const response = await server.inject({
+        method: "PUT",
+        url: "/threads/thread-123/comments/comment-123/likes",
+      });
+
+      // Assert
+      expect(response.statusCode).toEqual(401);
+    });
+
+    it("should return 404 when thread or comment not found", async () => {
+      // Arrange
+      const server = await createServer(container);
+
+      const userId = "user-123";
+      await UsersTableTestHelper.addUser({ id: userId });
+      const accessToken = Jwt.token.generate(
+        { id: userId },
+        process.env.ACCESS_TOKEN_KEY,
+      );
+      // Action
+      const response = await server.inject({
+        method: "PUT",
+        url: "/threads/thread-palsu/comments/comment-palsu/likes",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      // Assert
+      expect(response.statusCode).toEqual(404);
+    });
+  });
 });

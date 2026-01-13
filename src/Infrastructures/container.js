@@ -3,16 +3,16 @@ const { createContainer } = require("instances-container");
 // external agency
 const { nanoid } = require("nanoid");
 const bcrypt = require("bcrypt");
-const Jwt = require("@hapi/jwt"); // [WAJIB ADA]
+const Jwt = require("@hapi/jwt");
 const pool = require("./database/postgres/pool");
 
 // service (repository, helper, manager, etc)
 const UserRepositoryPostgres = require("./repository/UserRepositoryPostgres");
 const ThreadRepositoryPostgres = require("./repository/ThreadRepositoryPostgres");
 const CommentRepositoryPostgres = require("./repository/CommentRepositoryPostgres");
-const AuthenticationRepositoryPostgres = require("./repository/AuthenticationRepositoryPostgres"); // [WAJIB ADA]
+const AuthenticationRepositoryPostgres = require("./repository/AuthenticationRepositoryPostgres");
 const BcryptPasswordHash = require("./security/BcryptPasswordHash");
-const JwtTokenManager = require("./security/JwtTokenManager"); // [WAJIB ADA]
+const JwtTokenManager = require("./security/JwtTokenManager");
 
 // import use case
 const AddUserUseCase = require("../Applications/use_case/AddUserUseCase");
@@ -20,17 +20,18 @@ const AddThreadUseCase = require("../Applications/use_case/AddThreadUseCase");
 const GetThreadDetailUseCase = require("../Applications/use_case/GetThreadDetailUseCase");
 const AddCommentUseCase = require("../Applications/use_case/AddCommentUseCase");
 const DeleteCommentUseCase = require("../Applications/use_case/DeleteCommentUseCase");
-const LoginUserUseCase = require("../Applications/use_case/LoginUserUseCase"); // [WAJIB ADA]
-const LogoutUserUseCase = require("../Applications/use_case/LogoutUserUseCase"); // [WAJIB ADA]
-const RefreshAuthenticationUseCase = require("../Applications/use_case/RefreshAuthenticationUseCase"); // [WAJIB ADA]
+const LoginUserUseCase = require("../Applications/use_case/LoginUserUseCase");
+const LogoutUserUseCase = require("../Applications/use_case/LogoutUserUseCase");
+const RefreshAuthenticationUseCase = require("../Applications/use_case/RefreshAuthenticationUseCase");
+const ToggleLikeCommentUseCase = require("../Applications/use_case/ToggleLikeCommentUseCase");
 
 // import domain interfaces
 const UserRepository = require("../Domains/users/UserRepository");
 const PasswordHash = require("../Applications/security/PasswordHash");
 const ThreadRepository = require("../Domains/threads/ThreadRepository");
 const CommentRepository = require("../Domains/comments/CommentRepository");
-const AuthenticationRepository = require("../Domains/authentications/AuthenticationRepository"); // [WAJIB ADA]
-const AuthenticationTokenManager = require("../Applications/security/AuthenticationTokenManager"); // [WAJIB ADA]
+const AuthenticationRepository = require("../Domains/authentications/AuthenticationRepository");
+const AuthenticationTokenManager = require("../Applications/security/AuthenticationTokenManager");
 
 // creating container
 const container = createContainer();
@@ -45,7 +46,7 @@ container.register([
     },
   },
   {
-    key: AuthenticationRepository.name, // [WAJIB ADA]
+    key: AuthenticationRepository.name,
     Class: AuthenticationRepositoryPostgres,
     parameter: {
       dependencies: [{ concrete: pool }],
@@ -73,7 +74,7 @@ container.register([
     },
   },
   {
-    key: AuthenticationTokenManager.name, // [WAJIB ADA]
+    key: AuthenticationTokenManager.name,
     Class: JwtTokenManager,
     parameter: {
       dependencies: [{ concrete: Jwt.token }],
@@ -95,7 +96,7 @@ container.register([
     },
   },
   {
-    key: LoginUserUseCase.name, // [WAJIB ADA]
+    key: LoginUserUseCase.name,
     Class: LoginUserUseCase,
     parameter: {
       injectType: "destructuring",
@@ -114,7 +115,7 @@ container.register([
     },
   },
   {
-    key: LogoutUserUseCase.name, // [WAJIB ADA]
+    key: LogoutUserUseCase.name,
     Class: LogoutUserUseCase,
     parameter: {
       injectType: "destructuring",
@@ -127,7 +128,7 @@ container.register([
     },
   },
   {
-    key: RefreshAuthenticationUseCase.name, // [WAJIB ADA]
+    key: RefreshAuthenticationUseCase.name,
     Class: RefreshAuthenticationUseCase,
     parameter: {
       injectType: "destructuring",
@@ -183,6 +184,17 @@ container.register([
       dependencies: [
         { name: "commentRepository", internal: CommentRepository.name },
         { name: "threadRepository", internal: ThreadRepository.name },
+      ],
+    },
+  },
+  {
+    key: ToggleLikeCommentUseCase.name,
+    Class: ToggleLikeCommentUseCase,
+    parameter: {
+      injectType: "destructuring",
+      dependencies: [
+        { name: "threadRepository", internal: ThreadRepository.name },
+        { name: "commentRepository", internal: CommentRepository.name },
       ],
     },
   },

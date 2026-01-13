@@ -63,18 +63,46 @@ class CommentRepositoryPostgres extends CommentRepository {
     await this._pool.query(query);
   }
 
+  async addLikeComment(userId, commentId) {
+    const id = `like-${this._idGenerator()}`;
+    const query = {
+      text: "INSERT INTO user_comment_likes VALUES($1, $2, $3)",
+      values: [id, userId, commentId],
+    };
+    await this._pool.query(query);
+  }
+
+  async deleteLikeComment(userId, commentId) {
+    const query = {
+      text: "DELETE FROM user_comment_likes WHERE user_id = $1 AND comment_id = $2",
+      values: [userId, commentId],
+    };
+    await this._pool.query(query);
+  }
+
+  async checkLikeComment(userId, commentId) {
+    const query = {
+      text: "SELECT id FROM user_comment_likes WHERE user_id = $1 AND comment_id = $2",
+      values: [userId, commentId],
+    };
+    const result = await this._pool.query(query);
+    return result.rowCount; // Mengembalikan 1 (true) kalau ada, 0 (false) kalau ga ada
+  }
+
   async getCommentsByThreadId(threadId) {
     const query = {
-      text: `SELECT comments.id, users.username, comments.date, comments.content, comments.is_delete
-             FROM comments
-             INNER JOIN users ON comments.owner = users.id
-             WHERE comments.thread_id = $1
-             ORDER BY comments.date ASC`,
+      text: `SELECT comments.id, users.username, comments.date, comments.content, comments.is_delete, 
+           CAST(COUNT(user_comment_likes.id) AS INTEGER) AS like_count
+           FROM comments
+           INNER JOIN users ON comments.owner = users.id
+           LEFT JOIN user_comment_likes ON comments.id = user_comment_likes.comment_id
+           WHERE comments.thread_id = $1
+           GROUP BY comments.id, users.username
+           ORDER BY comments.date ASC`,
       values: [threadId],
     };
 
     const result = await this._pool.query(query);
-
     return result.rows;
   }
 }
