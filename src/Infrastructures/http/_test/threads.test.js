@@ -1,6 +1,7 @@
 const pool = require("../../database/postgres/pool");
 const UsersTableTestHelper = require("../../../../tests/UsersTableTestHelper");
 const ThreadsTableTestHelper = require("../../../../tests/ThreadsTableTestHelper");
+const CommentsTableTestHelper = require("../../../../tests/CommentsTableTestHelper");
 const AuthenticationsTableTestHelper = require("../../../../tests/AuthenticationsTableTestHelper");
 const container = require("../../container");
 const createServer = require("../createServer");
@@ -65,6 +66,56 @@ describe("/threads endpoint", () => {
 
       // Assert
       expect(response.statusCode).toEqual(401);
+    });
+  });
+
+  describe("GET /threads/{threadId}", () => {
+    it("should response 200 and detail thread", async () => {
+      // Arrange
+      const server = await createServer(container);
+
+      // 1. Add User & Thread dulu biar ada datanya
+      const userId = "user-123";
+      await UsersTableTestHelper.addUser({ id: userId });
+
+      await ThreadsTableTestHelper.addThread({
+        id: "thread-123",
+        owner: userId,
+      });
+      await CommentsTableTestHelper.addComment({
+        id: "comment-123",
+        threadId: "thread-123",
+        owner: userId,
+      });
+
+      // Action
+      const response = await server.inject({
+        method: "GET",
+        url: "/threads/thread-123",
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(200);
+      expect(responseJson.status).toEqual("success");
+      expect(responseJson.data.thread).toBeDefined();
+      expect(responseJson.data.thread.comments).toBeDefined();
+    });
+
+    it("should response 404 when thread not found", async () => {
+      // Arrange
+      const server = await createServer(container);
+
+      // Action
+      const response = await server.inject({
+        method: "GET",
+        url: "/threads/thread-tidak-ada",
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(404);
+      expect(responseJson.status).toEqual("fail");
     });
   });
 });

@@ -19,15 +19,15 @@ class CommentRepository {
     throw new Error("COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED");
   }
 
-  async addLikeComment(userId, commentId) {
+  async addLikeComment(_userId, _commentId) {
     throw new Error("COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED");
   }
 
-  async deleteLikeComment(userId, commentId) {
+  async deleteLikeComment(_userId, _commentId) {
     throw new Error("COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED");
   }
 
-  async checkLikeComment(userId, commentId) {
+  async checkLikeComment(_userId, _commentId) {
     throw new Error("COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED");
   }
 }

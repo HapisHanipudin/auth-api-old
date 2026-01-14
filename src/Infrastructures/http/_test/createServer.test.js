@@ -46,4 +46,31 @@ describe("HTTP server", () => {
     expect(responseJson.status).toEqual("error");
     expect(responseJson.message).toEqual("terjadi kegagalan pada server kami");
   });
+
+  it("should handle server error correctly", async () => {
+    // Arrange
+    const requestPayload = {
+      method: "GET",
+      url: "/error-test", // Route ngasal
+    };
+    const server = await createServer({}); // Gak butuh container beneran
+
+    // Nambahin route jebakan yang throw Error biasa (bukan ClientError/DomainError)
+    server.route({
+      method: "GET",
+      path: "/error-test",
+      handler: () => {
+        throw new Error("ups error server");
+      },
+    });
+
+    // Action
+    const response = await server.inject(requestPayload);
+
+    // Assert
+    const responseJson = JSON.parse(response.payload);
+    expect(response.statusCode).toEqual(500);
+    expect(responseJson.status).toEqual("error");
+    expect(responseJson.message).toEqual("terjadi kegagalan pada server kami");
+  });
 });

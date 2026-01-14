@@ -150,6 +150,16 @@ describe("ReplyRepositoryPostgres", () => {
         replyRepositoryPostgres.verifyReplyOwner("reply-123", "user-123"),
       ).resolves.not.toThrow(AuthorizationError);
     });
+
+    it("should throw NotFoundError when reply not found", async () => {
+      // Arrange
+      const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
+
+      // Action & Assert
+      await expect(
+        replyRepositoryPostgres.verifyReplyOwner("reply-tidak-ada", "user-123"),
+      ).rejects.toThrow(NotFoundError);
+    });
   });
 
   describe("deleteReply function", () => {

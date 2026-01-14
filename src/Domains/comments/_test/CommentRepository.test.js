@@ -21,5 +21,14 @@ describe("CommentRepository interface", () => {
     await expect(commentRepository.getCommentsByThreadId("")).rejects.toThrow(
       "COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED",
     );
+    await expect(commentRepository.addLikeComment("", "")).rejects.toThrow(
+      "COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED",
+    );
+    await expect(commentRepository.deleteLikeComment("", "")).rejects.toThrow(
+      "COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED",
+    );
+    await expect(commentRepository.checkLikeComment("", "")).rejects.toThrow(
+      "COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED",
+    );
   });
 });
