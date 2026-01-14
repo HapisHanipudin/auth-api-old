@@ -6,6 +6,7 @@ const users = require("../../Interfaces/http/api/users");
 const authentications = require("../../Interfaces/http/api/authentications"); // ADDED
 const threads = require("../../Interfaces/http/api/threads");
 const comments = require("../../Interfaces/http/api/comments");
+const replies = require("../../Interfaces/http/api/replies");
 const config = require("../../Commons/config");
 
 const Inert = require("@hapi/inert");
@@ -76,9 +77,12 @@ const createServer = async (container) => {
       plugin: threads,
       options: { container },
     },
-    // Tambahkan ini
     {
       plugin: comments,
+      options: { container },
+    },
+    {
+      plugin: replies,
       options: { container },
     },
   ]);
