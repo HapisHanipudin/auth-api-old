@@ -1,5 +1,3 @@
-const Joi = require("joi"); // Pastikan import Joi kalau mau payload-nya muncul di docs
-
 const routes = (handler) => [
   {
     method: "POST",

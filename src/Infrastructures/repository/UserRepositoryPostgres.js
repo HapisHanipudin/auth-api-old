@@ -1,5 +1,4 @@
 const InvariantError = require("../../Commons/exceptions/InvariantError");
-const AuthenticationError = require("../../Commons/exceptions/AuthenticationError"); // [WAJIB] Import ini
 const RegisteredUser = require("../../Domains/users/entities/RegisteredUser");
 const UserRepository = require("../../Domains/users/UserRepository");
 

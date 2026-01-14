@@ -5,12 +5,6 @@ const CommentRepository = require("../../../Domains/comments/CommentRepository")
 describe("ToggleLikeCommentUseCase", () => {
   it("should orchestrate the add like action correctly when like not exists", async () => {
     // Arrange
-    const useCasePayload = {
-      threadId: "thread-123",
-      commentId: "comment-123",
-      userId: "user-123",
-    };
-
     const mockThreadRepository = new ThreadRepository();
     const mockCommentRepository = new CommentRepository();
 
@@ -61,12 +55,6 @@ describe("ToggleLikeCommentUseCase", () => {
 
   it("should orchestrate the delete like action correctly when like exists", async () => {
     // Arrange
-    const useCasePayload = {
-      threadId: "thread-123",
-      commentId: "comment-123",
-      userId: "user-123",
-    };
-
     const mockThreadRepository = new ThreadRepository();
     const mockCommentRepository = new CommentRepository();
 

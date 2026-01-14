@@ -1,5 +1,4 @@
 const LoginUserUseCase = require("../LoginUserUseCase");
-const UserLogin = require("../../../Domains/users/entities/UserLogin");
 const NewAuth = require("../../../Domains/authentications/entities/NewAuth");
 const UserRepository = require("../../../Domains/users/UserRepository");
 const AuthenticationRepository = require("../../../Domains/authentications/AuthenticationRepository");

@@ -52,7 +52,7 @@ class CommentsHandler {
     };
   }
 
-  async putCommentLikeHandler(request, h) {
+  async putCommentLikeHandler(request, _h) {
     const toggleLikeCommentUseCase = this._container.getInstance(
       ToggleLikeCommentUseCase.name,
     );

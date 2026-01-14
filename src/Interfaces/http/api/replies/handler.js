@@ -29,7 +29,7 @@ class RepliesHandler {
     return response;
   }
 
-  async deleteReplyHandler(request, h) {
+  async deleteReplyHandler(request, _h) {
     const deleteReplyUseCase = this._container.getInstance(
       DeleteReplyUseCase.name,
     );
