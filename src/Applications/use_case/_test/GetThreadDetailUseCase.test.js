@@ -1,4 +1,5 @@
 const DetailThread = require("../../../Domains/threads/entities/DetailThread");
+const ReplyRepository = require("../../../Domains/replies/ReplyRepository");
 const ThreadRepository = require("../../../Domains/threads/ThreadRepository");
 const CommentRepository = require("../../../Domains/comments/CommentRepository");
 const GetThreadDetailUseCase = require("../GetThreadDetailUseCase");
@@ -43,6 +44,7 @@ describe("GetThreadDetailUseCase", () => {
     /** creating dependency of use case */
     const mockThreadRepository = new ThreadRepository();
     const mockCommentRepository = new CommentRepository();
+    const mockReplyRepository = new ReplyRepository();
 
     /** mocking needed function */
     mockThreadRepository.getThreadById = jest
@@ -51,11 +53,15 @@ describe("GetThreadDetailUseCase", () => {
     mockCommentRepository.getCommentsByThreadId = jest
       .fn()
       .mockImplementation(() => Promise.resolve(mockComments));
+    mockReplyRepository.getRepliesByThreadId = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve([]));
 
     /** creating use case instance */
     const getThreadDetailUseCase = new GetThreadDetailUseCase({
       threadRepository: mockThreadRepository,
       commentRepository: mockCommentRepository,
+      replyRepository: mockReplyRepository,
     });
 
     // Action
